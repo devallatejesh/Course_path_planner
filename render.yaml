@@ -1,0 +1,15 @@
+# Render Blueprint: the shared, always-the-same live server for everyone (free plan).
+# On render.com: New -> Blueprint -> pick this GitHub repository -> Apply.
+services:
+  - type: web
+    name: coursepath-planner
+    runtime: python
+    plan: free
+    buildCommand: "echo 'no packages needed - Python standard library only'"
+    startCommand: "python server.py"
+    healthCheckPath: /api/meta
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: PYTHON_VERSION
+        value: 3.12.7

@@ -19,6 +19,14 @@ py -3 build_data.py         # step 2: process them into data/*.csv for the agent
 py -3 server.py             # start the website
 ```
 
+## Online, shared by everyone (Render + Vercel)
+
+The website is at **https://coursepathplanner.vercel.app**. Its pages connect to one shared `server.py` running on Render's free plan (`render.yaml`), so **everyone sees the same live registrar**. When one visitor fills or cancels a course, every open page updates, and every affected student's plan is re-planned in real time.
+
+- **Setting up the server (once):** on render.com, sign in with GitHub, choose **New → Blueprint**, pick this repository and click **Apply**. The server runs `python server.py` with `HOST=0.0.0.0`.
+- **If Render gives a different address** than `https://coursepath-planner.onrender.com`, change `SHARED_API` in `web/common.js`.
+- **When the free server is asleep** (after about 15 minutes with no visitors), the page shows a notice and runs a private copy in the browser (see below) while the server wakes up. A "Reload to join everyone" button appears when it's ready.
+
 ## Online version (Vercel)
 
 Vercel can only serve files and short functions, so it can't run `server.py` itself: that needs memory between requests, the live-registrar loop and the event stream. On the hosted site, the **same Python code runs inside the visitor's browser** with [Pyodide](https://pyodide.org):

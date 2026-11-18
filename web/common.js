@@ -13,13 +13,52 @@ function renderNav() {
   document.body.prepend(el);
 }
 
-// Is server.py running (run.bat)? If not - e.g. on the hosted Vercel site - the SAME Python
-// code runs inside the browser instead (browser-python.js loads Pyodide + browser_api.py).
-const MODE = (async () => {
+// Where do the agents run? Three modes, tried in this order:
+//   "server"  server.py answers on this same site (run.bat on your laptop, or the Render site itself)
+//   "shared"  the shared online server.py on Render: every visitor sees the same live registrar
+//   "browser" fallback: the SAME Python code runs inside this browser (Pyodide), private to you
+const SHARED_API = (() => {
+  try { return localStorage.getItem("coursepathApi") || ""; } catch (e) { return ""; }
+})() || "https://coursepath-planner.onrender.com";
+let API_BASE = "";
+
+async function probe(base, ms) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
   try {
-    const r = await fetch("/api/meta", { cache: "no-store" });
-    if (r.ok && (r.headers.get("content-type") || "").includes("json")) return "server";
-  } catch (e) { /* no server answering */ }
+    const r = await fetch(base + "/api/meta", { cache: "no-store", signal: ctrl.signal });
+    return r.ok && (r.headers.get("content-type") || "").includes("json");
+  } catch (e) {
+    return false;
+  } finally { clearTimeout(timer); }
+}
+
+function notice(html) {
+  let el = document.getElementById("modeNotice");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "modeNotice";
+    el.style.cssText = "margin:0 auto;max-width:1100px;padding:8px 14px;border-radius:10px;font:13px system-ui,sans-serif;" +
+      "background:#3b2f0b;color:#fde68a;border:1px solid #6b5412;display:flex;gap:10px;align-items:center;flex-wrap:wrap";
+    const nav = document.querySelector("nav.nav");
+    (nav ? nav.parentNode : document.body).insertBefore(el, nav ? nav.nextSibling : document.body.firstChild);
+  }
+  el.innerHTML = html;
+}
+
+const MODE = (async () => {
+  if (await probe("", 5000)) return "server";
+  if (location.origin !== SHARED_API && (await probe(SHARED_API, 9000))) {
+    API_BASE = SHARED_API;
+    return "shared";
+  }
+  // The free shared server sleeps when nobody uses it. Wake it up, and use the browser copy meanwhile.
+  notice("<span>⏳ The shared live server is waking up (free hosting sleeps when idle). For now you have a " +
+         "<b>private copy running in your browser</b>.</span>");
+  probe(SHARED_API, 90000).then((up) => {
+    if (up) notice("<span>✅ The shared live server is ready.</span><button onclick='location.reload()' " +
+                   "style='padding:4px 10px;border-radius:6px;border:0;cursor:pointer'>Reload to join everyone</button>");
+  });
   await new Promise((ok, fail) => {
     const s = document.createElement("script");
     s.src = "browser-python.js";
@@ -38,7 +77,7 @@ async function api(path, body) {
     return res.body;
   }
   const opt = body === undefined ? {} : { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
-  const r = await fetch(path, opt);
+  const r = await fetch(API_BASE + path, opt);
   const j = await r.json();
   if (!r.ok) throw new Error(j.error || r.statusText);
   return j;
@@ -51,9 +90,10 @@ function liveStream(onMessage) {
   const setDot = (on, text) => { dot.classList.toggle("on", on); dot.querySelector("span").textContent = text; };
   let es = null;
   MODE.then(async (mode) => {
-    if (mode === "server") {
-      es = new EventSource("/api/stream");
-      es.onopen = () => setDot(true, "live");
+    if (mode === "server" || mode === "shared") {
+      const label = mode === "shared" ? "live · shared with everyone" : "live";
+      es = new EventSource(API_BASE + "/api/stream");
+      es.onopen = () => setDot(true, label);
       es.onerror = () => setDot(false, "reconnecting…");
       es.onmessage = (e) => onMessage(JSON.parse(e.data));
     } else {

@@ -37,6 +37,10 @@ from catalog import Catalog  # noqa: E402
 
 WEB = os.path.join(HERE, "web")
 PORT = int(os.environ.get("PORT", 8000))
+HOST = os.environ.get("HOST", "127.0.0.1")   # Render sets HOST=0.0.0.0 so the server is reachable online
+# Web pages hosted elsewhere (the Vercel site) may call this server's /api from the browser.
+ALLOWED_ORIGINS = {"https://coursepathplanner.vercel.app"} | {
+    o.strip() for o in os.environ.get("ALLOWED_ORIGINS", "").split(",") if o.strip()}
 LOCK = threading.RLock()          # agents and plan states are shared between threads
 
 
@@ -141,7 +145,8 @@ class Registrar:
 CAT = Catalog()
 REG = Registrar(CAT)
 ORCH = Orchestrator(CAT, REG)
-STATES = {}                        # plan_id -> state
+STATES = {}                        # plan_id -> state (insertion order = oldest first)
+MAX_PLANS = 300
 
 
 def react(event):
@@ -195,10 +200,27 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", "0")
         self.end_headers()
 
+    def do_OPTIONS(self):
+        """CORS pre-flight: lets the Vercel pages send JSON POSTs to this server."""
+        self.send_response(204)
+        self.cors()
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Max-Age", "600")
+        self.send_header("Content-Length", "0")
+        self.end_headers()
+
     # ---- helpers ----
+    def cors(self):
+        origin = self.headers.get("Origin", "")
+        if origin in ALLOWED_ORIGINS or origin.startswith(("http://localhost:", "http://127.0.0.1:")):
+            self.send_header("Access-Control-Allow-Origin", origin)
+            self.send_header("Vary", "Origin")
+
     def send_json(self, obj, code=200):
         body = json.dumps(obj).encode()
         self.send_response(code)
+        self.cors()
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
@@ -231,6 +253,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def stream(self):
         self.send_response(200)
+        self.cors()
         self.send_header("Content-Type", "text/event-stream")
         self.send_header("Cache-Control", "no-cache")
         self.send_header("Connection", "keep-alive")
@@ -360,6 +383,8 @@ class Handler(BaseHTTPRequestHandler):
             st["trace"] = ORCH.plan(st)
             pid = uuid.uuid4().hex[:8]
             STATES[pid] = st
+            while len(STATES) > MAX_PLANS:          # public site: keep only the newest plans in memory
+                STATES.pop(next(iter(STATES)))
             return self.send_json({**ORCH.view(pid, st), "trace": st["trace"]})
 
     def event(self, data):
@@ -399,9 +424,9 @@ class Handler(BaseHTTPRequestHandler):
 
 def main():
     threading.Thread(target=registrar_loop, daemon=True).start()
-    srv = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
+    srv = ThreadingHTTPServer((HOST, PORT), Handler)
     srv.daemon_threads = True
-    print(f"CoursePath Planner running ->  http://localhost:{PORT}   (Ctrl+C to stop)")
+    print(f"CoursePath Planner running ->  http://localhost:{PORT}   (Ctrl+C to stop)", flush=True)
     try:
         srv.serve_forever()
     except KeyboardInterrupt:
