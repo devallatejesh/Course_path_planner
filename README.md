@@ -19,6 +19,16 @@ py -3 build_data.py         # step 2: process them into data/*.csv for the agent
 py -3 server.py             # start the website
 ```
 
+## Online version (Vercel)
+
+Vercel can only serve files and short functions, so it can't run `server.py` itself: that needs memory between requests, the live-registrar loop and the event stream. On the hosted site, the **same Python code runs inside the visitor's browser** with [Pyodide](https://pyodide.org):
+
+- `web/common.js` first checks whether `server.py` is answering. If it is (`run.bat`), everything works exactly as before.
+- If not, `web/browser-python.js` loads Pyodide, copies `server.py`, `agents.py`, `catalog.py`, `browser_api.py` and `data/` into it, and runs the registrar every 2.5 s like `registrar_loop()` does.
+- `browser_api.py` imports `server.py` unchanged and answers each `/api/...` request with `server.Handler`, without a network.
+
+The first visit takes a few seconds while Python downloads; after that it is cached. Each visitor gets their own registrar and plans, and each page starts fresh (the Planner page has its own "fill this course" button for the adaptation demo).
+
 ## The datasets (real, public)
 | Dataset | Where it comes from | What the agents use it for |
 |---|---|---|
