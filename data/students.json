@@ -1,0 +1,273 @@
+[
+  {
+    "id": "S1001",
+    "name": "Ananya R",
+    "completed_semesters": 0,
+    "transcript": [],
+    "goal": "I want to become a machine learning engineer and build AI products. Graduate on time."
+  },
+  {
+    "id": "S1002",
+    "name": "Rahul K",
+    "completed_semesters": 1,
+    "transcript": [
+      {
+        "course": "CS 100",
+        "semester": 1,
+        "grade": "A",
+        "grade_point": 4.0
+      },
+      {
+        "course": "CS 124",
+        "semester": 1,
+        "grade": "A-",
+        "grade_point": 3.67
+      },
+      {
+        "course": "MATH 221",
+        "semester": 1,
+        "grade": "B+",
+        "grade_point": 3.33
+      },
+      {
+        "course": "RHET 105",
+        "semester": 1,
+        "grade": "A",
+        "grade_point": 4.0
+      },
+      {
+        "course": "ECON 102",
+        "semester": 1,
+        "grade": "B",
+        "grade_point": 3.0
+      }
+    ],
+    "goal": "Interested in data science and analytics, databases and data mining. Balanced workload."
+  },
+  {
+    "id": "S1003",
+    "name": "Meera S",
+    "completed_semesters": 3,
+    "transcript": [
+      {
+        "course": "CS 100",
+        "semester": 1,
+        "grade": "A",
+        "grade_point": 4.0
+      },
+      {
+        "course": "CS 124",
+        "semester": 1,
+        "grade": "B",
+        "grade_point": 3.0
+      },
+      {
+        "course": "MATH 221",
+        "semester": 1,
+        "grade": "C+",
+        "grade_point": 2.33
+      },
+      {
+        "course": "RHET 105",
+        "semester": 1,
+        "grade": "A-",
+        "grade_point": 3.67
+      },
+      {
+        "course": "PSYC 100",
+        "semester": 1,
+        "grade": "B+",
+        "grade_point": 3.33
+      },
+      {
+        "course": "CS 128",
+        "semester": 2,
+        "grade": "B-",
+        "grade_point": 2.67
+      },
+      {
+        "course": "CS 173",
+        "semester": 2,
+        "grade": "C",
+        "grade_point": 2.0
+      },
+      {
+        "course": "MATH 231",
+        "semester": 2,
+        "grade": "C",
+        "grade_point": 2.0
+      },
+      {
+        "course": "PHYS 211",
+        "semester": 2,
+        "grade": "C+",
+        "grade_point": 2.33
+      },
+      {
+        "course": "CS 225",
+        "semester": 3,
+        "grade": "F",
+        "grade_point": 0.0
+      },
+      {
+        "course": "MATH 257",
+        "semester": 3,
+        "grade": "B-",
+        "grade_point": 2.67
+      },
+      {
+        "course": "MATH 241",
+        "semester": 3,
+        "grade": "C",
+        "grade_point": 2.0
+      },
+      {
+        "course": "ECON 102",
+        "semester": 3,
+        "grade": "B",
+        "grade_point": 3.0
+      }
+    ],
+    "goal": "I want a career in cybersecurity and cryptography. Light workload please, I failed data structures."
+  },
+  {
+    "id": "S1004",
+    "name": "Arjun P",
+    "completed_semesters": 5,
+    "transcript": [
+      {
+        "course": "CS 100",
+        "semester": 1,
+        "grade": "A",
+        "grade_point": 4.0
+      },
+      {
+        "course": "CS 124",
+        "semester": 1,
+        "grade": "A-",
+        "grade_point": 3.67
+      },
+      {
+        "course": "MATH 221",
+        "semester": 1,
+        "grade": "B+",
+        "grade_point": 3.33
+      },
+      {
+        "course": "RHET 105",
+        "semester": 1,
+        "grade": "A",
+        "grade_point": 4.0
+      },
+      {
+        "course": "ECON 102",
+        "semester": 1,
+        "grade": "B",
+        "grade_point": 3.0
+      },
+      {
+        "course": "CS 128",
+        "semester": 2,
+        "grade": "B+",
+        "grade_point": 3.33
+      },
+      {
+        "course": "CS 173",
+        "semester": 2,
+        "grade": "B",
+        "grade_point": 3.0
+      },
+      {
+        "course": "MATH 231",
+        "semester": 2,
+        "grade": "B",
+        "grade_point": 3.0
+      },
+      {
+        "course": "PHYS 211",
+        "semester": 2,
+        "grade": "B-",
+        "grade_point": 2.67
+      },
+      {
+        "course": "CS 225",
+        "semester": 3,
+        "grade": "B",
+        "grade_point": 3.0
+      },
+      {
+        "course": "CS 222",
+        "semester": 3,
+        "grade": "A",
+        "grade_point": 4.0
+      },
+      {
+        "course": "MATH 241",
+        "semester": 3,
+        "grade": "B-",
+        "grade_point": 2.67
+      },
+      {
+        "course": "MATH 257",
+        "semester": 3,
+        "grade": "B+",
+        "grade_point": 3.33
+      },
+      {
+        "course": "PHIL 105",
+        "semester": 3,
+        "grade": "A-",
+        "grade_point": 3.67
+      },
+      {
+        "course": "CS 233",
+        "semester": 4,
+        "grade": "B-",
+        "grade_point": 2.67
+      },
+      {
+        "course": "CS 361",
+        "semester": 4,
+        "grade": "B",
+        "grade_point": 3.0
+      },
+      {
+        "course": "PHYS 212",
+        "semester": 4,
+        "grade": "C+",
+        "grade_point": 2.33
+      },
+      {
+        "course": "CS 211",
+        "semester": 4,
+        "grade": "A",
+        "grade_point": 4.0
+      },
+      {
+        "course": "CS 341",
+        "semester": 5,
+        "grade": "B",
+        "grade_point": 3.0
+      },
+      {
+        "course": "CS 374",
+        "semester": 5,
+        "grade": "C+",
+        "grade_point": 2.33
+      },
+      {
+        "course": "CS 357",
+        "semester": 5,
+        "grade": "B-",
+        "grade_point": 2.67
+      },
+      {
+        "course": "SOC 100",
+        "semester": 5,
+        "grade": "A",
+        "grade_point": 4.0
+      }
+    ],
+    "goal": "I love building web apps and user interface design. I want to work at a startup."
+  }
+]

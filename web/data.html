@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Datasets · CoursePath Planner</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+  <h1>Real data behind the plan</h1>
+  <p class="muted">The agents use public datasets downloaded from the internet by <code>download_data.py</code>
+    and processed by <code>build_data.py</code>. There is no machine-learning model; the agents read these facts directly.</p>
+
+  <div class="grid three" id="sources"></div>
+
+  <div class="card" style="margin-top:18px">
+    <div class="row" style="align-items:end">
+      <div><h3 style="margin:0">Real grade distribution of a course</h3>
+        <p class="tiny muted" style="margin:4px 0 0">UIUC GPA dataset, all Fall/Spring sections from Fall 2021 to 2026. The Planning Agent turns this into pass rates and expected GPA.</p></div>
+      <div style="max-width:380px"><label for="course">Course</label><select id="course"></select></div>
+    </div>
+    <div class="grid two" style="margin-top:6px">
+      <div><div class="dist" id="dist"></div><p class="small" id="distInfo"></p></div>
+      <div><b class="small">Average GPA by term</b><div id="trend"></div></div>
+    </div>
+  </div>
+
+  <div class="grid two" style="margin-top:18px">
+    <div class="card"><h3>Hardest courses in the degree (lowest average GPA)</h3>
+      <p class="tiny muted">The Planning Agent avoids stacking these in one semester (risk budget).</p>
+      <div id="hard"></div></div>
+    <div class="card"><h3>Career outcome data by track</h3>
+      <p class="tiny muted">FiveThirtyEight / US Census American Community Survey: recent graduates of related majors.</p>
+      <div style="overflow-x:auto"><table><thead><tr><th>Track</th><th>Related major</th><th>Median</th><th>Unemployed</th><th>College-level job</th></tr></thead>
+        <tbody id="careers"></tbody></table></div></div>
+  </div>
+
+  <div class="card" style="margin-top:18px"><h3>Technical electives per career track</h3>
+    <p class="tiny muted">Tracks are assigned from each course's official title and description in the UIUC catalog.</p>
+    <div class="grid three" id="tracks"></div></div>
+
+  <div class="card" style="margin-top:18px"><h3>Files</h3>
+    <p class="small">Built files the agents read:
+      <a href="/data/courses.csv" download>courses.csv</a> ·
+      <a href="/data/grade_history.csv" download>grade_history.csv</a> ·
+      <a href="/data/career_outcomes.csv" download>career_outcomes.csv</a> ·
+      <a href="/data/requirements.json" download>requirements.json</a> ·
+      <a href="/data/tracks.json" download>tracks.json</a> ·
+      <a href="/data/students.json" download>students.json</a> ·
+      <a href="/data/sources.json" download>sources.json</a></p>
+    <p class="tiny muted" id="notes"></p>
+  </div>
+</main>
+<script src="common.js"></script>
+<script>
+  const hb = (label, v, max, txt, cls = "") => `<div class="hbar"><span>${label}</span>
+    <div class="bar"><i class="${cls}" style="width:${Math.max(0, Math.min(1, v / max)) * 100}%"></i></div><span class="tiny">${txt}</span></div>`;
+  let S, META;
+  function showCourse(code) {
+    const d = S.dist[code] || [], tot = d.reduce((a, b) => a + b, 0), mx = Math.max(1, ...d);
+    const c = META.courses[code];
+    document.getElementById("dist").innerHTML = S.grades.map((g, i) =>
+      `<div class="${g === "F" ? "f" : g === "W" ? "w" : ""}"><span>${tot ? Math.round(d[i] / tot * 100) : 0}%</span><i style="height:${d[i] / mx * 130}px"></i>${g}</div>`).join("");
+    document.getElementById("distInfo").innerHTML = tot
+      ? `<b>${code} ${esc(c.name)}</b>: ${tot.toLocaleString()} students, average GPA <b>${c.avg_gpa?.toFixed(2)}</b>,
+         pass rate <b>${pct(c.pass_rate)}</b>, withdrew ${(c.withdraw_rate * 100).toFixed(1)}%.<br><span class="tiny muted">${esc(c.prereq_text || "No prerequisites")}</span>`
+      : `<b>${code}</b>: no grade data since Fall 2021. Its sections are small, and the university withholds classes of 20 or fewer students. The planner uses the degree average for it.`;
+    const h = (S.history[code] || []).slice().sort((a, b) => a.term.localeCompare(b.term));
+    document.getElementById("trend").innerHTML = h.map((r) =>
+      hb(`${r.term} <span class="tiny muted">(${r.students})</span>`, (r.avg_gpa || 0) - 2.5, 1.5, r.avg_gpa?.toFixed(2) ?? "–")).join("") || "<p class='muted small'>No data</p>";
+  }
+  (async () => {
+    [S, META] = await Promise.all([api("/api/stats"), api("/api/meta")]);
+    document.getElementById("sources").innerHTML = S.sources.datasets.map((d) =>
+      `<div class="card src"><h3>${esc(d.name)}</h3><p class="small muted">${esc(d.origin)}</p>
+        <p class="small"><b>Used for:</b> ${esc(d.used_for)}</p>
+        <p class="small"><b>${d.rows.toLocaleString()}</b> raw rows · <a href="${d.url}" target="_blank" rel="noopener">source ↗</a></p></div>`).join("");
+    const codes = Object.keys(META.courses).sort();
+    const sel = document.getElementById("course");
+    sel.innerHTML = codes.map((c) => `<option value="${c}">${c} ${esc(META.courses[c].name)}</option>`).join("");
+    sel.value = "CS 225"; sel.onchange = () => showCourse(sel.value); showCourse("CS 225");
+    document.getElementById("hard").innerHTML = S.hardest.map((h) =>
+      hb(`${h.code} ${esc(h.name)}`, h.avg_gpa - 2.5, 1.5, `GPA ${h.avg_gpa}`, h.avg_gpa < 3.1 ? "hot" : "")).join("");
+    document.getElementById("careers").innerHTML = Object.values(S.careers).flatMap((t) => t.rows.map((r, i) =>
+      `<tr><td>${i === 0 ? `<b>${esc(t.label)}</b>` : ""}</td><td class="small">${esc(r.major)}</td><td>$${r.median.toLocaleString()}</td>
+        <td>${(r.unemployment * 100).toFixed(1)}%</td><td>${pct(r.college_jobs)}</td></tr>`)).join("");
+    document.getElementById("tracks").innerHTML = Object.entries(S.track_electives).map(([t, list]) =>
+      `<div><b class="small">${META.tracks[t].label}</b> <span class="tiny muted">(${list.length})</span>
+        <p class="tiny">${list.map((e) => `${e} ${esc(META.courses[e].name)}`).join("<br>")}</p></div>`).join("");
+    document.getElementById("notes").textContent = S.sources.notes + " Built " + S.sources.built + ".";
+    liveStream(() => {});
+  })();
+</script>
+</body>
+</html>

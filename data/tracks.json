@@ -1,0 +1,200 @@
+{
+  "ai_ml": {
+    "label": "AI / Machine Learning",
+    "roles": [
+      "ML Engineer",
+      "AI Research Engineer",
+      "Applied Scientist"
+    ],
+    "majors": [
+      "MATHEMATICS AND COMPUTER SCIENCE",
+      "COMPUTER SCIENCE"
+    ],
+    "keywords": [
+      "ai",
+      "artificial intelligence",
+      "machine learning",
+      "ml",
+      "deep learning",
+      "neural",
+      "nlp",
+      "natural language",
+      "language model",
+      "llm",
+      "computer vision",
+      "vision",
+      "robot",
+      "robotics",
+      "chatbot",
+      "reinforcement",
+      "intelligent",
+      "agents",
+      "generative",
+      "learning"
+    ]
+  },
+  "data_science": {
+    "label": "Data Science & Analytics",
+    "roles": [
+      "Data Scientist",
+      "Data Analyst",
+      "Analytics Engineer"
+    ],
+    "majors": [
+      "STATISTICS AND DECISION SCIENCE",
+      "MANAGEMENT INFORMATION SYSTEMS AND STATISTICS"
+    ],
+    "keywords": [
+      "data",
+      "data science",
+      "analytics",
+      "analyst",
+      "statistics",
+      "statistical",
+      "big data",
+      "visualization",
+      "dashboards",
+      "insights",
+      "forecasting",
+      "database",
+      "databases",
+      "sql",
+      "mining",
+      "data mining",
+      "text",
+      "retrieval",
+      "information"
+    ]
+  },
+  "cybersecurity": {
+    "label": "Cybersecurity",
+    "roles": [
+      "Security Analyst",
+      "Penetration Tester",
+      "Security Engineer"
+    ],
+    "majors": [
+      "COMPUTER ADMINISTRATION MANAGEMENT AND SECURITY",
+      "COMPUTER AND INFORMATION SYSTEMS"
+    ],
+    "keywords": [
+      "security",
+      "cyber",
+      "cybersecurity",
+      "hacking",
+      "ethical hacking",
+      "crypto",
+      "cryptography",
+      "forensics",
+      "penetration",
+      "malware",
+      "privacy",
+      "attacks",
+      "secure",
+      "threat",
+      "verification",
+      "ctf",
+      "defend"
+    ]
+  },
+  "software_dev": {
+    "label": "Software Development",
+    "roles": [
+      "Software Engineer",
+      "Full-Stack Developer",
+      "Mobile Developer"
+    ],
+    "majors": [
+      "COMPUTER SCIENCE",
+      "COMPUTER PROGRAMMING AND DATA PROCESSING"
+    ],
+    "keywords": [
+      "software",
+      "developer",
+      "development",
+      "full stack",
+      "full-stack",
+      "web",
+      "app",
+      "apps",
+      "mobile",
+      "android",
+      "backend",
+      "frontend",
+      "startup",
+      "product",
+      "coding",
+      "programmer",
+      "programming",
+      "testing",
+      "devops",
+      "engineering",
+      "compilers"
+    ]
+  },
+  "cloud_systems": {
+    "label": "Cloud & Systems",
+    "roles": [
+      "Cloud Engineer",
+      "Site Reliability Engineer",
+      "Systems Engineer"
+    ],
+    "majors": [
+      "COMPUTER ENGINEERING",
+      "COMPUTER NETWORKING AND TELECOMMUNICATIONS"
+    ],
+    "keywords": [
+      "cloud",
+      "aws",
+      "azure",
+      "systems",
+      "distributed",
+      "infrastructure",
+      "iot",
+      "internet of things",
+      "embedded",
+      "kubernetes",
+      "operating systems",
+      "operating system",
+      "networks",
+      "networking",
+      "parallel",
+      "sre",
+      "scalable",
+      "hardware",
+      "architecture"
+    ]
+  },
+  "ux_design": {
+    "label": "UX & Interaction Design",
+    "roles": [
+      "UX Designer",
+      "Product Designer",
+      "Game Developer"
+    ],
+    "majors": [
+      "COMMERCIAL ART AND GRAPHIC DESIGN",
+      "INFORMATION SCIENCES"
+    ],
+    "keywords": [
+      "ux",
+      "ui",
+      "design",
+      "designer",
+      "user experience",
+      "interface",
+      "interfaces",
+      "hci",
+      "human-computer",
+      "game",
+      "games",
+      "creative",
+      "visual",
+      "interaction",
+      "graphics",
+      "virtual reality",
+      "accessibility",
+      "users"
+    ]
+  }
+}

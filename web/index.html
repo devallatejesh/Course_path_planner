@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CoursePath Planner</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <span class="pill">Multi-Agent Planning · Constraint Satisfaction · Adaptive Re-planning</span>
+      <h1>Your degree roadmap, <b>planned by four cooperating agents</b></h1>
+      <p>CoursePath Planner reads each student's goals, checks every prerequisite, seat and credit rule,
+        builds a semester-by-semester roadmap and keeps it current in real time, all the way to graduation.</p>
+      <div class="cta">
+        <a class="btn primary" href="planner.html">Open the Planner →</a>
+        <a class="btn" href="registrar.html">Watch the live registrar</a>
+        <a class="btn" href="data.html">See the datasets</a>
+      </div>
+    </div>
+    <div class="card">
+      <h3>How the agents collaborate</h3>
+      <p class="muted small">A single request flows through all four agents before a roadmap reaches the student.</p>
+      <div class="flow">
+        <div class="step s0"><b>Student</b><span>Goals &amp; interests</span></div>
+        <div class="step s1"><b>Goal Agent</b><span>Sets the objective</span></div>
+        <div class="step s2"><b>Constraint Agent</b><span>Filters valid options</span></div>
+        <div class="step s3"><b>Planning Agent</b><span>Builds the roadmap</span></div>
+        <div class="step s4"><b>Adaptation Agent</b><span>Keeps it current</span></div>
+      </div>
+      <div class="stats" id="counts" style="margin-top:16px"></div>
+    </div>
+  </section>
+
+  <h2 class="section-title">What each agent does</h2>
+  <div class="grid features">
+    <div class="card"><h3 style="color:#7048e8">Goal Agent</h3>
+      <p class="small muted">Reads the student's goal in plain English ("I want to become an ML engineer, light workload")
+        and turns it into a structured objective: career track weights, workload, credit limit, graduation target,
+        and electives they asked for or want to avoid.</p></div>
+    <div class="card"><h3 style="color:#e8590c">Constraint Agent</h3>
+      <p class="small muted">Owns every rule: prerequisites, co-requisites, odd/even term offerings, live seat
+        availability, credit limits and degree requirements. It filters valid options and finally runs the
+        guardrail validation on every roadmap.</p></div>
+    <div class="card"><h3 style="color:#3b5bdb">Planning Agent</h3>
+      <p class="small muted">Searches the space of valid schedules (depth-first search with backtracking over a CSP),
+        prioritising long prerequisite chains, resolving "one of" prerequisite rules and balancing difficulty
+        using real pass rates. It extends the timeline only if no plan fits.</p></div>
+    <div class="card"><h3 style="color:#2f9e44">Adaptation Agent</h3>
+      <p class="small muted">Watches the live registrar feed. When a course fills up or is cancelled, a course is dropped
+        or failed, or a goal changes, it re-plans the roadmap automatically and shows exactly what moved.</p></div>
+  </div>
+
+  <h2 class="section-title">Built on real, public data</h2>
+  <div class="grid three">
+    <div class="card src"><h3>UIUC Course Catalog</h3><p class="small muted">Official University of Illinois Course Explorer data:
+      real courses, credit hours, prerequisite rules, Fall/Spring offerings and the actual Spring 2027 schedule.</p></div>
+    <div class="card src"><h3>UIUC GPA Dataset</h3><p class="small muted">Grade distributions released by the university (FOIA):
+      real pass rates, average GPA, withdrawal rates and class sizes for every course in the plan.</p></div>
+    <div class="card src"><h3>US Census career outcomes</h3><p class="small muted">FiveThirtyEight's college-majors data (American Community
+      Survey): median salary, unemployment and college-level job share of each related major.</p></div>
+  </div>
+  <p class="small"><a href="data.html">Explore the datasets →</a></p>
+
+  <h2 class="section-title">The problem</h2>
+  <div class="grid features">
+    <div class="card"><h3>Tangled prerequisite chains</h3><p class="small muted">A single required class can depend on two or three others, found out too late.</p></div>
+    <div class="card"><h3>Hours lost to manual planning</h3><p class="small muted">Rebuilding the schedule every term and cross-checking every rule by hand.</p></div>
+    <div class="card"><h3>Requirements fall through the cracks</h3><p class="small muted">A missed elective often surfaces only at the final degree audit.</p></div>
+    <div class="card"><h3>Delayed graduation</h3><p class="small muted">One scheduling conflict can turn a four-year plan into five.</p></div>
+  </div>
+</main>
+<script src="common.js"></script>
+<script>
+  api("/api/stats").then((s) => {
+    const c = s.counts;
+    document.getElementById("counts").innerHTML = [
+      [c.courses, "real UIUC courses"], [c.catalog_rows.toLocaleString(), "catalog rows read"],
+      [c.grade_records.toLocaleString(), "grade-distribution rows"], [c.majors, "majors' career outcomes"],
+    ].map(([n, t]) => `<div class="stat"><b>${n}</b><span>${t}</span></div>`).join("");
+  });
+  liveStream(() => {});
+</script>
+</body>
+</html>

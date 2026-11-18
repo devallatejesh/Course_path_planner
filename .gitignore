@@ -1,0 +1,14 @@
+# old, unused virtual environment (the project uses only the Python standard library)
+venv/
+.venv/
+
+# Python caches
+__pycache__/
+*.pyc
+
+# raw downloads (about 55 MB) - re-create them with:  py download_data.py
+# the small processed files in data/ ARE uploaded, so the website works right away
+data/raw/
+
+# Office temp files
+~$*

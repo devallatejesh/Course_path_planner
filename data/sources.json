@@ -1,0 +1,47 @@
+{
+  "built": "2026-11-16 23:32",
+  "datasets": [
+    {
+      "name": "UIUC Course Catalog",
+      "files": [
+        "raw/catalog-2025-sp.csv",
+        "raw/catalog-2025-fa.csv",
+        "raw/catalog-2026-sp.csv",
+        "raw/catalog-2026-fa.csv",
+        "raw/catalog-2027-sp.csv"
+      ],
+      "url": "https://github.com/wadefagen/datasets/tree/main/course-catalog",
+      "origin": "University of Illinois Course Explorer API (courses.illinois.edu)",
+      "used_for": "courses, credit hours, prerequisites, terms offered, Fall 2026 / Spring 2027 offerings",
+      "rows": 64609
+    },
+    {
+      "name": "UIUC GPA Dataset",
+      "files": [
+        "raw/uiuc-gpa-dataset.csv"
+      ],
+      "url": "https://github.com/wadefagen/datasets/tree/main/gpa",
+      "origin": "Grade distributions released by the University of Illinois (FOIA / Senate EP.25.072)",
+      "used_for": "pass rates, average GPA, withdrawal rates, typical class size (2021-2026)",
+      "rows": 110326
+    },
+    {
+      "name": "FiveThirtyEight College Majors",
+      "files": [
+        "raw/recent-grads.csv",
+        "raw/grad-students.csv"
+      ],
+      "url": "https://github.com/fivethirtyeight/data/tree/master/college-majors",
+      "origin": "US Census American Community Survey 2010-2012 PUMS",
+      "used_for": "career outcomes: median salary, unemployment, college-level job share by major",
+      "rows": 346
+    }
+  ],
+  "built_files": {
+    "courses.csv": 69,
+    "grade_history.csv": 541,
+    "career_outcomes.csv": 12,
+    "students.json": 4
+  },
+  "notes": "Degree rules are modelled on the UIUC CS B.S. curriculum (simplified). Demo students are fictional. Live seat changes in the registrar feed are simulated around each course's real typical enrolment."
+}

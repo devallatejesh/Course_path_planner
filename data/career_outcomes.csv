@@ -1,0 +1,13 @@
+track,major,graduates,median_salary_usd,p25_salary_usd,p75_salary_usd,unemployment_rate,college_job_share,grad_degree_median_usd,grad_premium
+ai_ml,Mathematics And Computer Science,609,42000,30000,78000,0.0,0.871,98000,0.065217391
+ai_ml,Computer Science,128319,53000,39000,70000,0.0632,0.728,95000,0.1875
+data_science,Statistics And Decision Science,6251,45000,26700,60000,0.0863,0.657,92000,0.226666667
+data_science,Management Information Systems And Statistics,18713,51000,38000,60000,0.0582,0.525,89000,0.236111111
+cybersecurity,Computer Administration Management And Security,8066,37500,25000,50000,0.0997,0.421,81000,0.35
+cybersecurity,Computer And Information Systems,36698,45000,30000,60000,0.0935,0.531,80000,0.230769231
+software_dev,Computer Science,128319,53000,39000,70000,0.0632,0.728,95000,0.1875
+software_dev,Computer Programming And Data Processing,4168,41300,20000,46000,0.114,0.662,85000,0.416666667
+cloud_systems,Computer Engineering,41542,60000,45000,75000,0.0654,0.806,97000,0.197530864
+cloud_systems,Computer Networking And Telecommunications,7613,36400,27000,49000,0.1518,0.469,80000,0.379310345
+ux_design,Commercial Art And Graphic Design,103480,35000,25000,45000,0.0968,0.495,60000,0.25
+ux_design,Information Sciences,11913,45000,32500,58000,0.0607,0.517,84000,0.2

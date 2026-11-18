@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planner · CoursePath Planner</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+  <div class="grid planner">
+    <!-- ============ LEFT: student input ============ -->
+    <aside class="card sticky">
+      <h2>Student input</h2>
+      <label for="student">Student</label>
+      <select id="student"></select>
+      <div id="newName" style="display:none">
+        <label for="name">Name (new student, semester 1)</label>
+        <input id="name" placeholder="Your name">
+      </div>
+      <label for="goal">Your goal, in your own words</label>
+      <textarea id="goal" placeholder="e.g. I want to become a machine learning engineer, graduate on time, light workload"></textarea>
+      <div class="row">
+        <div><label for="workload">Workload</label>
+          <select id="workload"><option value="">Auto</option><option>light</option><option>balanced</option><option>heavy</option></select></div>
+        <div><label for="target">Graduate by sem</label>
+          <select id="target"><option value="">Auto</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
+      </div>
+      <label>Electives <span class="tiny muted">(click: green = want, red = avoid)</span></label>
+      <div class="chips" id="chips"></div>
+      <div class="actions"><button class="btn primary" id="run" style="flex:1">▶ Run the agents</button></div>
+      <p class="tiny muted">The Goal Agent reads your text first; anything you set here overrides it.</p>
+    </aside>
+
+    <!-- ============ CENTER: roadmap ============ -->
+    <section>
+      <div class="pipeline" id="pipeline">
+        <div class="agent" data-a="Goal Agent"><b>1 · Goal Agent</b><span>Sets the objective</span></div>
+        <div class="agent" data-a="Constraint Agent"><b>2 · Constraint Agent</b><span>Filters valid options</span></div>
+        <div class="agent" data-a="Planning Agent"><b>3 · Planning Agent</b><span>Builds the roadmap</span></div>
+        <div class="agent" data-a="Adaptation Agent"><b>4 · Adaptation Agent</b><span>Keeps it current</span></div>
+      </div>
+      <div class="banner" id="banner"></div>
+      <div class="card" id="result">
+        <div class="empty">
+          <h2>No roadmap yet</h2>
+          <p>Pick a student (or a new one), describe the goal, and press <b>Run the agents</b>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RIGHT: agent trace + live feed ============ -->
+    <aside class="grid sticky">
+      <div class="card">
+        <h3>Agent conversation</h3>
+        <div class="trace" id="trace"><p class="muted small">Messages between agents appear here.</p></div>
+      </div>
+      <div class="card">
+        <h3>Live registrar feed</h3>
+        <div class="feed" id="feed"><p class="muted small">Waiting for events…</p></div>
+      </div>
+    </aside>
+  </div>
+</main>
+<script src="common.js"></script>
+<script src="planner.js"></script>
+</body>
+</html>

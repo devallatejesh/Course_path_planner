@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Registrar · CoursePath Planner</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+  <h1>Live registrar</h1>
+  <p class="muted">Seat counts for the upcoming registration window, updated every few seconds by the server.
+    Each course's capacity is its <b>real typical enrolment</b> from the UIUC grade data, and the Spring 2027 column shows
+    whether it is on the <b>real Spring 2027 schedule</b>. Seat changes themselves are simulated.
+    When a course in someone's next semester becomes <b>FULL</b> or <b>CANCELLED</b>, the Adaptation Agent re-plans
+    that student automatically. Use the buttons to trigger events yourself during a demo.</p>
+  <div class="grid" style="grid-template-columns:minmax(0,1fr) 340px;align-items:start">
+    <div class="card">
+      <div class="row" style="align-items:end;margin-bottom:8px">
+        <div><label for="cat">Category</label>
+          <select id="cat"><option value="">All</option><option>core</option><option>elective</option><option>math</option>
+            <option>science</option><option>gened</option><option>writing</option><option>project</option></select></div>
+        <div><label for="q">Search</label><input id="q" placeholder="code or name"></div>
+        <div style="flex:0"><button class="btn" id="reset">↺ Reset seats</button></div>
+      </div>
+      <div style="overflow-x:auto"><table>
+        <thead><tr><th>Course</th><th>Seats</th><th></th><th>Status</th><th>Demo controls</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table></div>
+    </div>
+    <div class="card sticky">
+      <h3>Event feed</h3>
+      <div class="feed" id="feed" style="max-height:640px"><p class="muted small">Waiting for events…</p></div>
+    </div>
+  </div>
+</main>
+<script src="common.js"></script>
+<script>
+  let META, SEATS = {};
+  const $ = (id) => document.getElementById(id);
+
+  function draw() {
+    const cat = $("cat").value, q = $("q").value.toLowerCase();
+    $("rows").innerHTML = Object.values(META.courses)
+      .filter((c) => (!cat || c.category === cat) && (!q || (c.code + " " + c.name).toLowerCase().includes(q)))
+      .map((c) => {
+        const s = SEATS[c.code] || [0, c.capacity, "open"];
+        const f = s[0] / s[1];
+        const when = { both: "Fall & Spring", odd: "Fall only", even: "Spring only" }[c.offered];
+        return `<tr class="${s[2]}"><td><b>${c.code}</b> ${esc(c.name)}<div class="tiny muted">${c.category} · ${when} ·
+          ${c.spring_2027 ? "on Spring 2027 schedule" : "<span style='color:var(--warn)'>not in Spring 2027</span>"}</div></td>
+          <td style="width:28%"><div class="bar"><i class="${s[2] !== "open" ? "full" : f > .9 ? "hot" : ""}" style="width:${Math.min(100, f * 100)}%"></i></div></td>
+          <td class="tiny">${s[0]}/${s[1]}</td>
+          <td><span class="pill ${s[2] === "open" ? "ok" : "bad"}">${s[2]}</span></td>
+          <td style="white-space:nowrap"><button class="btn small" onclick="act('${c.code}','fill')">Fill</button>
+            <button class="btn small" onclick="act('${c.code}','cancel')">Cancel</button>
+            <button class="btn small" onclick="act('${c.code}','reopen')">+Section</button></td></tr>`;
+      }).join("");
+  }
+  async function act(course, action) { await api("/api/registrar", { course, action }); }
+  function addFeed(m) {
+    const box = $("feed");
+    if (box.querySelector("p.muted")) box.innerHTML = "";
+    const d = document.createElement("div");
+    d.className = `msg ${m.kind}`;
+    d.innerHTML = `<span class="ms">${esc(m.time)}</span>${esc(m.text)}`;
+    box.prepend(d);
+    while (box.children.length > 60) box.lastChild.remove();   // keep the page light during long demos
+  }
+  (async () => {
+    META = await api("/api/meta");
+    $("cat").onchange = draw; $("q").oninput = draw;
+    $("reset").onclick = () => api("/api/registrar/reset", {});
+    draw();
+    liveStream((m) => {
+      if (m.seats) { SEATS = m.seats; draw(); }
+      if (m.type === "hello") m.feed.forEach(addFeed);
+      if (m.type === "registrar") addFeed(m);
+      if (m.type === "replan") addFeed({ kind: "replan", time: new Date().toLocaleTimeString(),
+        text: `Adaptation Agent re-planned ${m.view.student.name}: ${m.diff.length} change(s), graduation sem ${m.view.plan.graduation_sem}` });
+    });
+  })();
+</script>
+</body>
+</html>
